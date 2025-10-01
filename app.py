@@ -46,6 +46,7 @@ def update_tasks(user_id: int, task_id: int):
 
 @app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
 def manage_tasks(user_id: int):
+    # TODO: add diffrent responses based on 'Accept: ' header thing
     if request.method == "GET":
         QUERY = text('SELECT * FROM tasks WHERE user_id = :user_id;')
         with engine.connect() as conn:
@@ -131,7 +132,7 @@ def tasks():
         with engine.connect() as conn:
             fetch_ids = conn.execute(QUERY).fetchall()
 
-        task_id = int(str(fetch_ids).split("(")[1].split(",")[0])  # calculate the next id for task to be inserted
+        task_id = int(str(fetch_ids).split("(")[1].split(",")[0])  # TODO: remove this becouse it will be auto calculated in db
 
         created_at = data.get('created_at')
         task_name = data.get('task_name')
@@ -177,3 +178,5 @@ def tasks():
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+# TODO: separate the logic to separate file from this

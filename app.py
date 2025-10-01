@@ -212,6 +212,13 @@ def tasks():
         "message": "Successfully added task to the database"
     }), 201
 
+# TODO: add endpoints for users: GET, POST, DELETE
+# TODO: fix foreign key constraint violation for adding tasks (user doesn't exist)
+# TODO: add .http tests for new users endpoints
+# TODO: code quality refactor
+# TODO: code quality refactor part two -> change logs (currently print) to flask logging system
+# TODO: new README.md with description and instructions how to run etc.
+# TODO: requirements.txt file with required packages for project
 
 if __name__ == "__main__":
     app.run(debug=True)

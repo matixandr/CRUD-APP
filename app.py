@@ -8,6 +8,11 @@ app = Flask(__name__)
 def update_tasks(user_id: int, task_id: int):
     if request.method == "PATCH":
         data = request.get_json()
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Data is empty"
+            }), 400
 
         ALLOWED = {'task_name', 'due_date', 'priority', 'status'}
         params = {"task_id": task_id, "user_id": user_id}
@@ -28,7 +33,10 @@ def update_tasks(user_id: int, task_id: int):
         QUERY = text(f"UPDATE tasks SET {clause} WHERE task_id = :task_id AND user_id = :user_id")
 
         with engine.connect() as conn:
-            conn.execute(QUERY, params)
+            conn.execute(QUERY, {
+                "task_id":task_id,
+                "user_id": user_id
+            })
             conn.commit()
 
         return jsonify({
@@ -42,7 +50,6 @@ def manage_tasks(user_id: int):
         QUERY = text('SELECT * FROM tasks WHERE user_id = :user_id;')
         with engine.connect() as conn:
             result = conn.execute(QUERY, {"user_id": user_id}).fetchall()
-            # we are doing the weird user_id thing to remove the ability to SQL injection attack
 
         thing = f"""
                 <h1>TASK LIST TABLE</h1>
@@ -82,6 +89,12 @@ def manage_tasks(user_id: int):
         return thing
     if request.method == "DELETE":
         data = request.get_json()
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Data is empty"
+            }), 400
+
         task_id = data.get("task_id")
 
         if not user_id or not task_id:
@@ -127,15 +140,34 @@ def tasks():
         user_id = data.get('user_id')
         status = data.get('status')
 
-        if not task_name or not user_id or not created_at or not status or not due_date or not priority:
+        if (
+            not task_name or
+            not user_id or
+            not created_at or
+            not status or
+            not due_date or
+            not priority
+        ):
             return jsonify({
                 "status": "error",
                 "message": "One of the values for inserting into tasks is not present in the request"
             }), 400
 
-        ADD_TO_TASK = text(f"INSERT INTO tasks VALUES ({task_id}, '{task_name}', {user_id}, '{created_at}', '{status}', '{due_date}', '{priority}')")
+        ADD_TO_TASK = text("""
+            INSERT INTO tasks (task_id, task_name, user_id, created_at, status, due_date, priority)
+            VALUES (:task_id, :task_name, :user_id, :created_at, :status, :due_date, :priority)
+        """)
+
         with engine.connect() as conn:
-            conn.execute(ADD_TO_TASK) # TODO: change from this to more secure approach
+            conn.execute(ADD_TO_TASK, {
+                "task_id": task_id,
+                "task_name": task_name,
+                "user_id": user_id,
+                "created_at": created_at,
+                "status": status,
+                "due_date": due_date,
+                "priority": priority
+            })
             conn.commit()
 
         return jsonify({

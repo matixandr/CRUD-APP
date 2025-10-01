@@ -54,6 +54,7 @@ DB_NAME = os.getenv("POSTGRES_DB_NAME")
 engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DB_NAME}" )
 inspector = sqlalchemy.inspect(engine)
 
+# TODO: move this to app.py or convert this to a function and call it from app.py either way it goes to app.py
 if not inspector.has_table('users'):
     Users.__table__.create(engine)
     print("[LOG] Table Users does not exist, creating it...")

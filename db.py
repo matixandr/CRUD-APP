@@ -1,18 +1,17 @@
-from sqlalchemy import Column, INTEGER, VARCHAR, TIMESTAMP, DATE
-from sqlalchemy.dialects.postgresql import ENUM
+from sqlalchemy import Column, INTEGER, VARCHAR, TIMESTAMP, DATE, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy.dialects.postgresql import ENUM
 import sqlalchemy
 import dotenv
 import os
 
 Base = declarative_base()
-# TODO użyć relationship do task id i id w user
 
 class Tasks(Base):
     __tablename__ = "tasks"
     task_id = Column(INTEGER, primary_key=True)
     task_name = Column(VARCHAR(128))
-    user_id = Column(INTEGER)
+    user_id = Column(INTEGER, ForeignKey('user.id'))
     created_at = Column(TIMESTAMP(timezone=True), nullable=False)
     status = Column(
         ENUM(
@@ -35,6 +34,7 @@ class Tasks(Base):
         nullable=False,
         default='medium'
     )
+    user = relationship("User", back_populates="tasks")
 
 class Users(Base):
     __tablename__ = "users"
@@ -42,6 +42,7 @@ class Users(Base):
     username = Column(VARCHAR(64))
     role = Column(VARCHAR(32))
     created_at = Column(TIMESTAMP)
+    tasks = relationship("Tasks", back_populates="user")
 
 dotenv.load_dotenv()
 USERNAME = os.getenv("POSTGRES_USERNAME")

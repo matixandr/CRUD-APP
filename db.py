@@ -1,12 +1,12 @@
-import os
-
 from sqlalchemy import Column, INTEGER, VARCHAR, TIMESTAMP, DATE
 from sqlalchemy.dialects.postgresql import ENUM
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import declarative_base, relationship
 import sqlalchemy
 import dotenv
+import os
 
 Base = declarative_base()
+# TODO użyć relationship do task id i id w user
 
 class Tasks(Base):
     __tablename__ = "tasks"

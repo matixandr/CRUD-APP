@@ -43,7 +43,7 @@ class Tasks(Base):
 class Users(Base):
     __tablename__ = "users"
     tasks: _RelationshipDeclared[Any] = relationship("Tasks", back_populates="users")
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True)
+    id: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP)
     username: Mapped[str] = mapped_column(VARCHAR(64))
     role: Mapped[str] = mapped_column(VARCHAR(32))

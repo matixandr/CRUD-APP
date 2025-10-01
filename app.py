@@ -1,13 +1,9 @@
-from flask import Flask, request, jsonify, Response
-from db import engine
-
-from repository import (
-    task_post_executor,
-    task_delete_executor,
-    task_get_executor,
-    task_patch_executor)
+from repository import task_post_executor,task_delete_executor,task_get_executor,task_patch_executor
+from flask import Flask, request, jsonify
+from db import db_init
 
 app = Flask(__name__)
+engine = db_init()
 
 @app.route('/tasks/<int:user_id>/<int:task_id>', methods=['PATCH'])
 def update_tasks(user_id: int, task_id: int):

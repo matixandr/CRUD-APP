@@ -1,6 +1,11 @@
 from flask import Flask, request, jsonify
-from sqlalchemy import text
 from db import engine
+
+from repository import (
+    task_post_executor,
+    task_delete_executor,
+    task_get_executor,
+    task_patch_executor)
 
 app = Flask(__name__)
 
@@ -30,14 +35,19 @@ def update_tasks(user_id: int, task_id: int):
             }), 400
 
         clause = ", ".join(fields)
-        QUERY = text(f"UPDATE tasks SET {clause} WHERE task_id = :task_id AND user_id = :user_id")
-
-        with engine.connect() as conn:
-            conn.execute(QUERY, {
-                "task_id":task_id,
-                "user_id": user_id
-            })
-            conn.commit()
+        try:
+            task_patch_executor(
+                engine,
+                clause,
+                task_id,
+                user_id
+            )
+        except Exception as e:
+            print(f"err in patch executor task: {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error editing task in database, please check the server console"
+            }), 500
 
         return jsonify({
             "status": "success",
@@ -47,9 +57,17 @@ def update_tasks(user_id: int, task_id: int):
 @app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
 def manage_tasks(user_id: int):
     if request.method == "GET":
-        QUERY = text('SELECT * FROM tasks WHERE user_id = :user_id;')
-        with engine.connect() as conn:
-            result = conn.execute(QUERY, {"user_id": user_id}).fetchall()
+        try:
+            result = task_get_executor(
+                engine,
+                user_id
+            )
+        except Exception as e:
+            print(f"err in delete executor task: {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error getting task data from database, please check the server console"
+            }), 500
 
         format = request.accept_mimetypes.best_match(['application/json', 'text/html'])
 
@@ -126,72 +144,76 @@ def manage_tasks(user_id: int):
                 "message": "One of these is missing: user_id or task_id"
             }), 400
 
-        QUERY = text(f"DELETE FROM tasks WHERE user_id = :user_id AND task_id = :task_id")
-        with engine.connect() as conn:
-            conn.execute(QUERY, {
-                "user_id": user_id,
-                "task_id": task_id
-            })
-            conn.commit()
+        try:
+            task_delete_executor(
+                engine,
+                user_id,
+                task_id
+            )
+        except Exception as e:
+            print(f"err in delete executor task: {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error deleting task from database, please check the server console"
+            }), 500
 
         return jsonify({
             "status": "success",
-            "message": f"Successfully deleted an task from database ({user_id}:{task_id})"
+            "message": f"Successfully deleted an task from database"
         }), 200
 
 @app.route('/tasks', methods=['POST'])
 def tasks():
-    if request.method == "POST":
-        data = request.get_json()
+    data = request.get_json()
 
-        if data.get('task_id'):
-            return jsonify({
-                "status": "error",
-                "message": "You can't pass task_id into the parameters because it's calculated automatically"
-            }), 400
+    if data.get('task_id'):
+        return jsonify({
+            "status": "error",
+            "message": "You can't pass task_id into the parameters because it's calculated automatically"
+        }), 400
 
-        created_at = data.get('created_at')
-        task_name = data.get('task_name')
-        due_date = data.get('due_date')
-        priority = data.get('priority')
-        user_id = data.get('user_id')
-        status = data.get('status')
+    created_at = data.get('created_at')
+    task_name = data.get('task_name')
+    due_date = data.get('due_date')
+    priority = data.get('priority')
+    user_id = data.get('user_id')
+    status = data.get('status')
 
-        if (
+    if (
             not task_name or
             not user_id or
             not created_at or
             not status or
             not due_date or
             not priority
-        ):
-            return jsonify({
-                "status": "error",
-                "message": "One of the values for inserting into tasks is not present in the request"
-            }), 400
-
-        ADD_TO_TASK = text("""
-            INSERT INTO tasks (task_name, user_id, created_at, status, due_date, priority)
-            VALUES (:task_name, :user_id, :created_at, :status, :due_date, :priority)
-        """)
-
-        with engine.connect() as conn:
-            conn.execute(ADD_TO_TASK, {
-                "task_name": task_name,
-                "user_id": user_id,
-                "created_at": created_at,
-                "status": status,
-                "due_date": due_date,
-                "priority": priority
-            })
-            conn.commit()
-
+    ):
         return jsonify({
-            "status": "success",
-            "message": "Successfully added task to the database"
-        }), 201
+            "status": "error",
+            "message": "One of the values for inserting into tasks is not present in the request"
+        }), 400
+
+    try:
+        task_post_executor(
+            engine,
+            task_name,
+            user_id,
+            created_at,
+            status,
+            due_date,
+            priority
+        )
+    except Exception as e:
+        print(f"err in post executor task: {e}")
+        return jsonify({
+            "status": "error",
+            "message": "There was an error adding task to database, please check the server console"
+        }), 500
+
+    return jsonify({
+        "status": "success",
+        "message": "Successfully added task to the database"
+    }), 201
+
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# TODO: separate the logic to separate file from this

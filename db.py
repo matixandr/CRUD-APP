@@ -48,7 +48,7 @@ dotenv.load_dotenv()
 USERNAME = os.getenv("POSTGRES_USERNAME")
 PASSWORD = os.getenv("POSTGRES_PASSWD")
 SERVER = os.getenv("POSTGRES_SERVER")
-PORT = os.getenv("POSTGRES_ENV")
+PORT = os.getenv("POSTGRES_PORT")
 DB_NAME = os.getenv("POSTGRES_DB_NAME")
 
 engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DB_NAME}" )

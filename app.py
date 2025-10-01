@@ -52,42 +52,65 @@ def manage_tasks(user_id: int):
         with engine.connect() as conn:
             result = conn.execute(QUERY, {"user_id": user_id}).fetchall()
 
-        thing = f"""
-                <h1>TASK LIST TABLE</h1>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <th>task_id</th>
-                            <th>task_name</th>
-                            <th>user_id</th>
-                            <th>created_at</th>
-                            <th>status</th>
-                            <th>due_date</th>
-                            <th>priority</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                """
+        format = request.accept_mimetypes.best_match(['application/json', 'text/html'])
 
-        for record in result:
-            thing += f"""
-                        <tr>
-                            <td>{record[0]}</td>
-                            <td>{record[1]}</td>
-                            <td>{record[2]}</td>
-                            <td>{record[3]}</td>
-                            <td>{record[4]}</td>
-                            <td>{record[5]}</td>
-                            <td>{record[6]}</td>
-                        </tr>
+        if format == "text/html":
+            thing = f"""
+                    <h1>TASK LIST TABLE</h1>
+                    <table border="1">
+                        <thead>
+                            <tr>
+                                <th>task_id</th>
+                                <th>task_name</th>
+                                <th>user_id</th>
+                                <th>created_at</th>
+                                <th>status</th>
+                                <th>due_date</th>
+                                <th>priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                     """
 
-        thing += """
-                    </tbody>
-                </table>
-                """
+            for record in result:
+                thing += f"""
+                            <tr>
+                                <td>{record[0]}</td>
+                                <td>{record[1]}</td>
+                                <td>{record[2]}</td>
+                                <td>{record[3]}</td>
+                                <td>{record[4]}</td>
+                                <td>{record[5]}</td>
+                                <td>{record[6]}</td>
+                            </tr>
+                        """
 
-        return thing
+            thing += """
+                        </tbody>
+                    </table>
+                    """
+
+            return thing
+
+        task_list = []
+        for record in result:
+            task_list.append({
+                "task_id": record[0],
+                "task_name": record[1],
+                "user_id": record[2],
+                "created_at": str(record[3]),
+                "status": record[4],
+                "due_date": str(record[5]),
+                "priority": record[6]
+            })
+
+        return jsonify({
+            "status": "success",
+            "message": "Fetch of data successful",
+            "data": task_list
+        })
+
+
     if request.method == "DELETE":
         data = request.get_json()
         if not data:

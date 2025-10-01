@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from db import engine
 
 from repository import (
@@ -20,28 +20,30 @@ def update_tasks(user_id: int, task_id: int):
             }), 400
 
         ALLOWED = {'task_name', 'due_date', 'priority', 'status'}
-        params = {"task_id": task_id, "user_id": user_id}
-        fields = []
+        update_fields = {}
 
         for key, value in data.items():
             if key in ALLOWED:
-                fields.append(f"{key} = :{key}")
-                params[key] = value
+                update_fields[key] = value
 
-        if not fields:
+        if not update_fields:
             return jsonify({
                 "status": "error",
                 "message": "There is no fields to edit inside the database"
             }), 400
 
-        clause = ", ".join(fields)
         try:
-            task_patch_executor(
+            ex = task_patch_executor(
                 engine,
-                clause,
+                update_fields,
                 task_id,
                 user_id
             )
+            if type(ex) == str:
+                return jsonify({
+                    "status": "error",
+                    "message": "There is no safe fields to update inside database"
+                }), 400
         except Exception as e:
             print(f"err in patch executor task: {e}")
             return jsonify({

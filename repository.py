@@ -1,6 +1,6 @@
+from sqlalchemy import text, Sequence, Row
 from sqlalchemy.engine import Engine
-from typing import LiteralString
-from sqlalchemy import text
+from typing import Any
 
 def task_post_executor(
         engine: Engine,
@@ -10,7 +10,7 @@ def task_post_executor(
         status: str,
         due_date: str,
         priority: str
-    ):
+    ) -> None:
     ADD_TO_TASK = text(
     """
         INSERT INTO tasks (task_name, user_id, created_at, status, due_date, priority)
@@ -31,7 +31,7 @@ def task_post_executor(
 def task_get_executor(
         engine: Engine,
         user_id: int
-    ):
+    ) -> Sequence[Row[Any]]:
     QUERY = text('SELECT * FROM tasks WHERE user_id = :user_id;')
     with engine.connect() as conn:
         result = conn.execute(QUERY, {"user_id": user_id}).fetchall()
@@ -42,7 +42,7 @@ def task_delete_executor(
         engine: Engine,
         user_id: int,
         task_id: int
-    ):
+    ) -> None:
     QUERY = text(f"DELETE FROM tasks WHERE user_id = :user_id AND task_id = :task_id")
     with engine.connect() as conn:
         conn.execute(QUERY, {
@@ -53,15 +53,23 @@ def task_delete_executor(
 
 def task_patch_executor(
         engine: Engine,
-        clause: LiteralString,
+        update_fields: dict,
         task_id: int,
         user_id: int
-    ):
-    QUERY = text(f"UPDATE tasks SET {clause} WHERE task_id = :task_id AND user_id = :user_id")
+    ) -> str | None:
+    ALLOWED_FIELDS = {'task_name', 'due_date', 'priority', 'status'}
+    safe_fields = {k: v for k, v in update_fields.items() if k in ALLOWED_FIELDS}
+
+    if not safe_fields:
+        return "nice try with that sql injection"
+
+    set_clauses = [f"{field} = :{field}" for field in safe_fields.keys()]
+    set_clause = ", ".join(set_clauses)
+
+    QUERY = text(f"UPDATE tasks SET {set_clause} WHERE task_id = :task_id AND user_id = :user_id")
+
+    params = {**safe_fields, "task_id": task_id, "user_id": user_id}
 
     with engine.connect() as conn:
-        conn.execute(QUERY, {
-            "task_id": task_id,
-            "user_id": user_id
-        })
+        conn.execute(QUERY, params)
         conn.commit()

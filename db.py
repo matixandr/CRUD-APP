@@ -9,7 +9,7 @@ Base = declarative_base()
 
 class Tasks(Base):
     __tablename__ = "tasks"
-    task_id = Column(INTEGER, primary_key=True) # TODO: change to autoincremental
+    task_id = Column(INTEGER, primary_key=True, autoincrement=True)
     task_name = Column(VARCHAR(128))
     user_id = Column(INTEGER, ForeignKey('user.id'))
     created_at = Column(TIMESTAMP(timezone=True), nullable=False)

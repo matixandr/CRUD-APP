@@ -46,7 +46,6 @@ def update_tasks(user_id: int, task_id: int):
 
 @app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
 def manage_tasks(user_id: int):
-    # TODO: add diffrent responses based on 'Accept: ' header thing
     if request.method == "GET":
         QUERY = text('SELECT * FROM tasks WHERE user_id = :user_id;')
         with engine.connect() as conn:
@@ -148,14 +147,8 @@ def tasks():
         if data.get('task_id'):
             return jsonify({
                 "status": "error",
-                "message": "You can't pass task id into the parameters because it's calculated automatically"
+                "message": "You can't pass task_id into the parameters because it's calculated automatically"
             }), 400
-
-        QUERY = text('SELECT COUNT(task_id) FROM tasks;')
-        with engine.connect() as conn:
-            fetch_ids = conn.execute(QUERY).fetchall()
-
-        task_id = int(str(fetch_ids).split("(")[1].split(",")[0])  # TODO: remove this becouse it will be auto calculated in db
 
         created_at = data.get('created_at')
         task_name = data.get('task_name')
@@ -178,13 +171,12 @@ def tasks():
             }), 400
 
         ADD_TO_TASK = text("""
-            INSERT INTO tasks (task_id, task_name, user_id, created_at, status, due_date, priority)
-            VALUES (:task_id, :task_name, :user_id, :created_at, :status, :due_date, :priority)
+            INSERT INTO tasks (task_name, user_id, created_at, status, due_date, priority)
+            VALUES (:task_name, :user_id, :created_at, :status, :due_date, :priority)
         """)
 
         with engine.connect() as conn:
             conn.execute(ADD_TO_TASK, {
-                "task_id": task_id,
                 "task_name": task_name,
                 "user_id": user_id,
                 "created_at": created_at,
@@ -197,7 +189,7 @@ def tasks():
         return jsonify({
             "status": "success",
             "message": "Successfully added task to the database"
-        }), 200
+        }), 201
 
 if __name__ == "__main__":
     app.run(debug=True)

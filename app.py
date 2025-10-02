@@ -1,6 +1,8 @@
-from repository import task_post_executor,task_delete_executor,task_get_executor,task_patch_executor
+from repository import task_post_executor, task_delete_executor, task_get_executor, task_patch_executor, \
+    users_get_executor, users_post_executor, users_delete_executor
 from flask import Flask, request, jsonify
 from db import db_init
+import datetime
 
 app = Flask(__name__)
 engine = db_init()
@@ -170,7 +172,13 @@ def tasks():
             "message": "You can't pass task_id into the parameters because it's calculated automatically"
         }), 400
 
-    created_at = data.get('created_at')
+    if data.get('created_at'):
+        return jsonify({
+            "status": "error",
+            "message": "You can't pass created_at into the parameters because it's calculated automatically"
+        }), 400
+
+    created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     task_name = data.get('task_name')
     due_date = data.get('due_date')
     priority = data.get('priority')
@@ -212,7 +220,112 @@ def tasks():
         "message": "Successfully added task to the database"
     }), 201
 
-# TODO: add endpoints for users: GET, POST, DELETE
+@app.route('/users', methods=['GET', 'POST', 'DELETE'])
+def users():
+    if request.method == "GET":
+        try:
+            usr = users_get_executor(engine)
+        except Exception as e:
+            print(f"err at users get executor:  {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error getting users, please check the server console"
+            }), 500
+
+        format = request.accept_mimetypes.best_match(['application/json', 'text/html'])
+
+        if format == "text/html":
+            thing = f"""
+                            <h1>USER LIST TABLE</h1>
+                            <table border="1">
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>username</th>
+                                        <th>role</th>
+                                        <th>created_at</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            """
+
+            for record in usr:
+                thing += f"""
+                                    <tr>
+                                        <td>{record[0]}</td>
+                                        <td>{record[1]}</td>
+                                        <td>{record[2]}</td>
+                                        <td>{record[3]}</td>
+                                    </tr>
+                                """
+
+            thing += """
+                                </tbody>
+                            </table>
+                            """
+
+            return thing
+
+        task_list = []
+        for record in usr:
+            task_list.append({
+                "id": int(record[0]),
+                "username": record[1],
+                "role": record[2],
+                "created_at": str(record[3]),
+            })
+
+        return jsonify({
+            "placeholder because yes"
+        }), 200
+
+    if request.method == "POST":
+        data = request.get_json()
+        create_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+        try:
+            r = users_post_executor(
+                engine,
+                username=data.get("username"),
+                role=data.get("role"),
+                created_at=create_timestamp
+            )
+            if type(r) == str:
+                return jsonify({
+                    "status": "error",
+                    "message": "Can't create user in database: user already exists"
+                }), 409
+        except Exception as e:
+            print(f"err at users post executor: {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error adding user to database, please check the server console"
+            }), 500
+
+        return jsonify({
+            "status": "success",
+            "message": "Successfully added a new user to database"
+        }), 201
+
+    if request.method == "DELETE":
+        data = request.get_json()
+        try:
+            users_delete_executor(
+                engine,
+                username=data.get("username")
+            )
+        except Exception as e:
+            print(f"err at users delete executor: {e}")
+            return jsonify({
+                "status": "error",
+                "message": "There was an error deleting user from database, please check the server console"
+            }), 500
+
+        return jsonify({
+            "status": "success",
+            "message": "Successfully deleted a user from database"
+        }), 200
+
 # TODO: fix foreign key constraint violation for adding tasks (user doesn't exist)
 # TODO: add .http tests for new users endpoints
 # TODO: code quality refactor

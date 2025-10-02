@@ -73,3 +73,50 @@ def task_patch_executor(
     with engine.connect() as conn:
         conn.execute(QUERY, params)
         conn.commit()
+
+def users_get_executor(engine: Engine) -> Sequence[Row[Any]]:
+    QUERY = text("SELECT * FROM users;")
+    with engine.connect() as conn:
+        result = conn.execute(QUERY).fetchall()
+
+    return result
+
+def users_post_executor(
+        engine: Engine,
+        username: str,
+        role: str,
+        created_at: str
+    ) -> str | None:
+    QUERY_FIND = text("SELECT * FROM users WHERE username = :username")
+    with engine.connect() as conn:
+        result = conn.execute(QUERY_FIND, {
+            "username": username
+        })
+
+    if result:
+        return "user exists"
+
+    QUERY_ADD = text("""
+     INSERT INTO users (username, role, created_at) 
+     VALUES (:username, :role, :created_at)
+     """)
+    with engine.connect() as conn:
+        conn.execute(QUERY_ADD, {
+            "username": username,
+            "role": role,
+            "created_at": created_at
+        })
+        conn.commit()
+
+def users_delete_executor(
+        engine: Engine,
+        username: str
+    ) -> None:
+    QUERY = text("""
+        DELETE FROM users WHERE username = :username
+    """)
+    with engine.connect() as conn:
+        conn.execute(QUERY, {
+            "username": username
+        })
+        conn.commit()

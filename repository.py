@@ -93,7 +93,7 @@ def users_post_executor(
             "username": username
         })
 
-    if result:
+    if result.fetchone() is not None:
         return "user exists"
 
     QUERY_ADD = text("""

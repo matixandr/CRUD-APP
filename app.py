@@ -269,14 +269,15 @@ def users():
         task_list = []
         for record in usr:
             task_list.append({
-                "id": int(record[0]),
+                "id": record[0],
                 "username": record[1],
                 "role": record[2],
                 "created_at": str(record[3]),
             })
 
         return jsonify({
-            "placeholder because yes"
+            "status": "successful",
+            "message": "Successfully fetched users data"
         }), 200
 
     if request.method == "POST":
@@ -326,8 +327,6 @@ def users():
             "message": "Successfully deleted a user from database"
         }), 200
 
-# TODO: fix foreign key constraint violation for adding tasks (user doesn't exist)
-# TODO: add .http tests for new users endpoints
 # TODO: code quality refactor
 # TODO: code quality refactor part two -> change logs (currently print) to flask logging system
 # TODO: new README.md with description and instructions how to run etc.

@@ -54,20 +54,14 @@ def db_init() -> Engine:
 
     USERNAME = os.getenv("POSTGRES_USERNAME")
     PASSWORD = os.getenv("POSTGRES_PASSWD")
-    SERVER = os.getenv("POSTGRES_SERVER")
+    SERVER = os.getenv( "POSTGRES_SERVER")
     PORT = os.getenv("POSTGRES_PORT")
     DB_NAME = os.getenv("POSTGRES_DB_NAME")
 
     engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DB_NAME}")
     print("[LOG] created engine (auth successful")
 
-    inspector = sqlalchemy.inspect(engine)
-    if not inspector.has_table('users'):
-        Users.__table__.create(engine)
-        print("[LOG] Table Users does not exist, creating it...")
-
-    if not inspector.has_table('tasks'):
-        Tasks.__table__.create(engine)
-        print("[LOG] Table Tasks does not exist, creating it...")
+    Base.metadata.create_all(engine, checkfirst=True)
+    print("[LOG] Tables created or already exist")
 
     return engine

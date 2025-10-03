@@ -1,4 +1,4 @@
-# CRUD-APP
+# CRUD-APP [![wakatime](https://wakatime.com/badge/user/018bd7d5-20a7-48f2-b2f1-7e6c6eb2c1f0/project/f1236ae5-366c-4b3f-b85a-d3ad55e2ac4b.svg)](https://wakatime.com/badge/user/018bd7d5-20a7-48f2-b2f1-7e6c6eb2c1f0/project/f1236ae5-366c-4b3f-b85a-d3ad55e2ac4b)
 
 A RESTful task and user management API built with Flask and PostgreSQL
 

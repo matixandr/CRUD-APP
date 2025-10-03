@@ -62,7 +62,7 @@ A RESTful task and user management API built with Flask and PostgreSQL
 | PATCH | `/tasks/{user_id}/{task_id}` | Any allowed field** | Update task |
 | DELETE | `/tasks/{user_id}` | `{"task_id": 1}` | Delete task |
 
-> \*POST /tasks required fields:**
+> *POST /tasks required fields:
 ```json
 {
   "task_name": "Complete homework",
@@ -73,7 +73,7 @@ A RESTful task and user management API built with Flask and PostgreSQL
 }
 ```
 
-> \*\*PATCH allowed fields:** `task_name`, `status`, `due_date`, `priority`
+> **PATCH allowed fields: `task_name`, `status`, `due_date`, `priority`
 
 ### Response Format
 

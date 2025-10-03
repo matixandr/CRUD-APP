@@ -1,6 +1,6 @@
 from repository import task_post_executor, task_delete_executor, task_get_executor, task_patch_executor, \
     users_get_executor, users_post_executor, users_delete_executor
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from db import db_init
 import datetime
 
@@ -8,7 +8,7 @@ app = Flask(__name__)
 engine = db_init()
 
 @app.route('/tasks/<int:user_id>/<int:task_id>', methods=['PATCH'])
-def update_tasks(user_id: int, task_id: int):
+def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
     if request.method == "PATCH":
         data = request.get_json()
         if not data:
@@ -43,7 +43,7 @@ def update_tasks(user_id: int, task_id: int):
                     "message": "There is no safe fields to update inside database"
                 }), 400
         except Exception as e:
-            print(f"err in patch executor task: {e}")
+            print(f"err at patch executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error editing task in database, please check the server console"
@@ -55,7 +55,7 @@ def update_tasks(user_id: int, task_id: int):
         }), 200
 
 @app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
-def manage_tasks(user_id: int):
+def manage_tasks(user_id: int) -> None | tuple[Response, int]:
     if request.method == "GET":
         try:
             result = task_get_executor(
@@ -63,7 +63,7 @@ def manage_tasks(user_id: int):
                 user_id
             )
         except Exception as e:
-            print(f"err in delete executor task: {e}")
+            print(f"err at delete executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error getting task data from database, please check the server console"
@@ -125,7 +125,7 @@ def manage_tasks(user_id: int):
             "status": "success",
             "message": "Fetch of data successful",
             "data": task_list
-        })
+        }), 200
 
 
     if request.method == "DELETE":
@@ -151,7 +151,7 @@ def manage_tasks(user_id: int):
                 task_id
             )
         except Exception as e:
-            print(f"err in delete executor task: {e}")
+            print(f"err at delete executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error deleting task from database, please check the server console"
@@ -163,8 +163,13 @@ def manage_tasks(user_id: int):
         }), 200
 
 @app.route('/tasks', methods=['POST'])
-def tasks():
+def tasks() -> tuple[Response, int]:
     data = request.get_json()
+    if not data:
+        return jsonify({
+            "status": "error",
+            "message": "Data is empty"
+        }), 400
 
     if data.get('task_id'):
         return jsonify({
@@ -188,7 +193,6 @@ def tasks():
     if (
             not task_name or
             not user_id or
-            not created_at or
             not status or
             not due_date or
             not priority
@@ -209,7 +213,7 @@ def tasks():
             priority
         )
     except Exception as e:
-        print(f"err in post executor task: {e}")
+        print(f"err at post executor task: {e}")
         return jsonify({
             "status": "error",
             "message": "There was an error adding task to database, please check the server console"
@@ -221,7 +225,7 @@ def tasks():
     }), 201
 
 @app.route('/users', methods=['GET', 'POST', 'DELETE'])
-def users():
+def users() -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
             usr = users_get_executor(engine)
@@ -276,12 +280,18 @@ def users():
             })
 
         return jsonify({
-            "status": "successful",
+            "status": "success",
             "message": "Successfully fetched users data"
         }), 200
 
     if request.method == "POST":
         data = request.get_json()
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Data is empty"
+            }), 400
+
         create_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         try:
@@ -310,6 +320,12 @@ def users():
 
     if request.method == "DELETE":
         data = request.get_json()
+        if not data:
+            return jsonify({
+                "status": "error",
+                "message": "Data is empty"
+            }), 400
+
         try:
             users_delete_executor(
                 engine,
@@ -327,7 +343,6 @@ def users():
             "message": "Successfully deleted a user from database"
         }), 200
 
-# TODO: code quality refactor
 # TODO: code quality refactor part two -> change logs (currently print) to flask logging system
 # TODO: new README.md with description and instructions how to run etc.
 # TODO: requirements.txt file with required packages for project

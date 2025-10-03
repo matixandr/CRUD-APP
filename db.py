@@ -8,7 +8,6 @@ import sqlalchemy
 import dotenv
 import os
 
-
 Base = declarative_base()
 
 class Tasks(Base):

@@ -343,8 +343,5 @@ def users() -> None | tuple[Response, int] | str:
             "message": "Successfully deleted a user from database"
         }), 200
 
-# TODO: new README.md with description and instructions how to run etc.
-# TODO: requirements.txt file with required packages for project
-
 if __name__ == "__main__":
     app.run(debug=True)

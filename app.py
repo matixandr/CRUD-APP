@@ -43,7 +43,7 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
                     "message": "There is no safe fields to update inside database"
                 }), 400
         except Exception as e:
-            print(f"err at patch executor task: {e}")
+            app.logger.error(f"err at patch executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error editing task in database, please check the server console"
@@ -55,7 +55,7 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
         }), 200
 
 @app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
-def manage_tasks(user_id: int) -> None | tuple[Response, int]:
+def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
             result = task_get_executor(
@@ -63,7 +63,7 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int]:
                 user_id
             )
         except Exception as e:
-            print(f"err at delete executor task: {e}")
+            app.logger.error(f"err at delete executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error getting task data from database, please check the server console"
@@ -151,7 +151,7 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int]:
                 task_id
             )
         except Exception as e:
-            print(f"err at delete executor task: {e}")
+            app.logger.error(f"err at delete executor task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error deleting task from database, please check the server console"
@@ -213,7 +213,7 @@ def tasks() -> tuple[Response, int]:
             priority
         )
     except Exception as e:
-        print(f"err at post executor task: {e}")
+        app.logger.error(f"err at post executor task: {e}")
         return jsonify({
             "status": "error",
             "message": "There was an error adding task to database, please check the server console"
@@ -230,7 +230,7 @@ def users() -> None | tuple[Response, int] | str:
         try:
             usr = users_get_executor(engine)
         except Exception as e:
-            print(f"err at users get executor:  {e}")
+            app.logger.error(f"err at users get executor:  {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error getting users, please check the server console"
@@ -307,7 +307,7 @@ def users() -> None | tuple[Response, int] | str:
                     "message": "Can't create user in database: user already exists"
                 }), 409
         except Exception as e:
-            print(f"err at users post executor: {e}")
+            app.logger.error(f"err at users post executor: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error adding user to database, please check the server console"
@@ -332,7 +332,7 @@ def users() -> None | tuple[Response, int] | str:
                 username=data.get("username")
             )
         except Exception as e:
-            print(f"err at users delete executor: {e}")
+            app.logger.error(f"err at users delete executor: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error deleting user from database, please check the server console"
@@ -343,7 +343,6 @@ def users() -> None | tuple[Response, int] | str:
             "message": "Successfully deleted a user from database"
         }), 200
 
-# TODO: code quality refactor part two -> change logs (currently print) to flask logging system
 # TODO: new README.md with description and instructions how to run etc.
 # TODO: requirements.txt file with required packages for project
 

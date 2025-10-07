@@ -1,66 +1,25 @@
-from sqlalchemy.orm import declarative_base, relationship, mapped_column, Mapped
-from sqlalchemy import INTEGER, VARCHAR, TIMESTAMP, DATE, ForeignKey, Engine
-from sqlalchemy.orm.relationships import _RelationshipDeclared
-from sqlalchemy.dialects.postgresql import ENUM
-from datetime import datetime, date
-from typing import Any
+from sqlalchemy.engine import Engine
+from models import Base
+from app import app
 import sqlalchemy
 import dotenv
 import os
 
-Base = declarative_base()
-
-class Tasks(Base):
-    __tablename__ = "tasks"
-    users: _RelationshipDeclared[Any] = relationship("Users", back_populates="tasks")
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
-    task_id: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True)
-    user_id: Mapped[int] = mapped_column(INTEGER, ForeignKey('users.id'))
-    task_name: Mapped[str] = mapped_column(VARCHAR(128))
-    due_date: Mapped[date] = mapped_column(DATE)
-    status = mapped_column(
-        ENUM(
-            'pending',
-            'in-progress',
-            'completed',
-            name="status_enum",
-            create_type=True),
-        nullable=False,
-        default='pending'
-    )
-    priority = mapped_column(
-        ENUM(
-            'low',
-            'medium',
-            'high',
-            name="priority_enum",
-            create_type=True),
-        nullable=False,
-        default='medium'
-    )
-
-class Users(Base):
-    __tablename__ = "users"
-    tasks: _RelationshipDeclared[Any] = relationship("Tasks", back_populates="users")
-    created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), nullable=False)
-    id: Mapped[int] = mapped_column(INTEGER, primary_key=True, autoincrement=True)
-    username: Mapped[str] = mapped_column(VARCHAR(64))
-    role: Mapped[str] = mapped_column(VARCHAR(32))
-
 def db_init() -> Engine:
     dotenv.load_dotenv()
-    print("[LOG] loaded .env file")
+    app.logger.info("loaded .env file")
 
     USERNAME = os.getenv("POSTGRES_USERNAME")
     PASSWORD = os.getenv("POSTGRES_PASSWD")
-    SERVER = os.getenv( "POSTGRES_SERVER")
+    SERVER = os.getenv("POSTGRES_SERVER")
     PORT = os.getenv("POSTGRES_PORT")
     DB_NAME = os.getenv("POSTGRES_DB_NAME")
 
-    engine = sqlalchemy.create_engine(f"postgresql+psycopg2://{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DB_NAME}")
-    print("[LOG] created engine (auth successful")
+    engine = sqlalchemy.create_engine(
+        f"postgresql+psycopg2://{USERNAME}:{PASSWORD}@{SERVER}:{PORT}/{DB_NAME}"
+    )
+    app.logger.info("created engine (auth successful)")
 
     Base.metadata.create_all(engine, checkfirst=True)
-    print("[LOG] Tables created or already exist")
-
+    app.logger.info("database create_all executed successfully")
     return engine

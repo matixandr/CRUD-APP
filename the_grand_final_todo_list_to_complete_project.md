@@ -1,15 +1,15 @@
 ## Project Structure Setup
-- [x] Create `models/` directory
-- [x] Create `repositories/` directory  
-- [x] Create `services/` directory
-- [x] Create `routes/` directory
-- [x] Add `__init__.py` files to all new directories
+- [x] ~~Create `models/` directory~~
+- [x] ~~Create `repositories/` directory~~  
+- [x] ~~Create `services/` directory~~
+- [x] ~~Create `routes/` directory~~
+- [x] ~~Add `__init__.py` files to all new directories~~
 
 ## Models Layer
-- [ ] Create `models/task.py` - move `Tasks` class from `db.py`
-- [ ] Create `models/user.py` - move `Users` class from `db.py`
-- [ ] Create `models/__init__.py` - export both models
-- [ ] Update imports in other files
+- [x] ~~Create `models/task.py` - move `Tasks` class from `db.py`~~
+- [x] ~~Create `models/user.py` - move `Users` class from `db.py`~~
+- [x] ~~Create `models/__init__.py` - export both models~~
+- [x] ~~Update imports in other files~~
 
 ## Repository Layer
 - [ ] Create `repositories/task_repository.py`

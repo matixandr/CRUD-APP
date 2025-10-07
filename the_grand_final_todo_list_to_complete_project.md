@@ -40,13 +40,13 @@
 - [x] ~~Create `services/__init__.py` - export both services~~
 
 ## Dependency Injection Container
-- [ ] Create `config.py`
-  - [ ] Add `AppConfig` class
-  - [ ] Initialize `engine` in constructor
-  - [ ] Initialize `task_repository` with engine
-  - [ ] Initialize `user_repository` with engine
-  - [ ] Initialize `task_service` with task_repository
-  - [ ] Initialize `user_service` with user_repository
+- [x] ~~Create `config.py`~~
+  - [x] ~~Add `AppConfig` class~~
+  - [x] ~~Initialize `engine` in constructor~~
+  - [x] ~~Initialize `task_repository` with engine~~
+  - [x] ~~Initialize `user_repository` with engine~~
+  - [x] ~~Initialize `task_service` with task_repository~~
+  - [x] ~~Initialize `user_service` with user_repository~~
 
 ## Routes Layer
 - [ ] Create `routes/task_routes.py`

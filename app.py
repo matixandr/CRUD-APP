@@ -1,19 +1,11 @@
-from repositories.task_repository import TaskRepository
-from repositories.user_repository import UserRepository
-from services.user_service import UserService
-from services.task_service import TaskService
-
 from flask import Flask, request, jsonify, Response
-from db import db_init
+from config import AppConfig
 
 app = Flask(__name__)
-engine = db_init()
+cfg = AppConfig()
 
-tr = TaskRepository(engine)
-ts = TaskService(tr)
-
-ur = UserRepository(engine)
-us = UserService(ur)
+ts = cfg.task_service
+us = cfg.user_service
 
 @app.route('/tasks/<int:user_id>/<int:task_id>', methods=['PATCH'])
 def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:

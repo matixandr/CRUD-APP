@@ -1,9 +1,9 @@
 ## Project Structure Setup
-- [ ] Create `models/` directory
-- [ ] Create `repositories/` directory  
-- [ ] Create `services/` directory
-- [ ] Create `routes/` directory
-- [ ] Add `__init__.py` files to all new directories
+- [x] Create `models/` directory
+- [x] Create `repositories/` directory  
+- [x] Create `services/` directory
+- [x] Create `routes/` directory
+- [x] Add `__init__.py` files to all new directories
 
 ## Models Layer
 - [ ] Create `models/task.py` - move `Tasks` class from `db.py`

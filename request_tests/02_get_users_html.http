@@ -1,0 +1,4 @@
+### Test 2: GET all users (HTML format)
+GET http://localhost:5000/users
+Accept: text/html
+

@@ -1,0 +1,9 @@
+### Test 3: POST - Create admin user
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "role": "admin"
+}
+

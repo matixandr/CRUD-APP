@@ -1,7 +1,0 @@
-### Delete task from db test
-DELETE http://localhost:5000/tasks/4321
-Content-Type: application/json
-
-{
-  "task_id": 3
-}

@@ -1,0 +1,8 @@
+### Test 6: POST - User with missing role field (should fail)
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+  "username": "incomplete_user"
+}
+

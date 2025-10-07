@@ -1,0 +1,12 @@
+### Test 12: POST - Create task for user_id=3
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Write unit tests",
+  "user_id": 3,
+  "status": "pending",
+  "due_date": "2025-10-12",
+  "priority": "high"
+}
+

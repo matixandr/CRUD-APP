@@ -1,0 +1,12 @@
+### Test 11: POST - Create task for user_id=2
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Update dependencies",
+  "user_id": 2,
+  "status": "pending",
+  "due_date": "2025-10-20",
+  "priority": "low"
+}
+

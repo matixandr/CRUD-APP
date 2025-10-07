@@ -1,0 +1,10 @@
+### Test 25: PATCH - Update multiple fields (user_id=3, task_id=4)
+PATCH http://localhost:5000/tasks/3/4
+Content-Type: application/json
+
+{
+  "status": "in_progress",
+  "priority": "urgent",
+  "task_name": "Write comprehensive unit tests"
+}
+

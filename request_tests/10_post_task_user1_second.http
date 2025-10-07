@@ -1,0 +1,12 @@
+### Test 10: POST - Create another task for user_id=1
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Review code changes",
+  "user_id": 1,
+  "status": "in_progress",
+  "due_date": "2025-10-10",
+  "priority": "medium"
+}
+

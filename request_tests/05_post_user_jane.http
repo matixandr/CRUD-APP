@@ -1,0 +1,9 @@
+### Test 5: POST - Create regular user (jane_smith)
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+  "username": "jane_smith",
+  "role": "user"
+}
+

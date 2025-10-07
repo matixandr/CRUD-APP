@@ -84,12 +84,12 @@
 - [x] ~~Remove unused imports~~
 
 ## Testing & Verification
-- [ ] Test `POST /tasks` endpoint
-- [ ] Test `GET /tasks/<user_id>` endpoint
-- [ ] Test `PATCH /tasks/<user_id>/<task_id>` endpoint
-- [ ] Test `DELETE /tasks/<user_id>` endpoint
-- [ ] Test `GET /users` endpoint
-- [ ] Test `POST /users` endpoint
-- [ ] Test `DELETE /users` endpoint
-- [ ] Verify database connection works
-- [ ] Check error handling works correctly
+- [x] ~~Test `POST /tasks` endpoint~~
+- [x] ~~Test `GET /tasks/<user_id>` endpoint~~
+- [x] ~~Test `PATCH /tasks/<user_id>/<task_id>` endpoint~~
+- [x] ~~Test `DELETE /tasks/<user_id>` endpoint~~
+- [x] ~~Test `GET /users` endpoint~~
+- [x] ~~Test `POST /users` endpoint~~
+- [x] ~~Test `DELETE /users` endpoint~~
+- [x] ~~Verify database connection works~~
+- [x] ~~Check error handling works correctly~~

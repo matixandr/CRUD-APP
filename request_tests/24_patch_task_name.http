@@ -1,0 +1,8 @@
+### Test 24: PATCH - Update task name (user_id=2, task_id=3)
+PATCH http://localhost:5000/tasks/2/3
+Content-Type: application/json
+
+{
+  "task_name": "Update all dependencies and test"
+}
+

@@ -1,5 +1,5 @@
-from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy import INTEGER, VARCHAR, TIMESTAMP, DATE, ForeignKey
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 from sqlalchemy.orm.relationships import _RelationshipDeclared
 from sqlalchemy.dialects.postgresql import ENUM
 from datetime import datetime, date

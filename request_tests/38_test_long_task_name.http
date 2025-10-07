@@ -1,0 +1,12 @@
+### Test 38: Boundary Test - Very long task name
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "This is a very long task name that might exceed database limits if there are any constraints on the task_name field length in the database schema",
+  "user_id": 1,
+  "status": "pending",
+  "due_date": "2025-10-15",
+  "priority": "medium"
+}
+

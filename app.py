@@ -1,6 +1,6 @@
-from flask import Flask
-from config import AppConfig
 from routes import create_task_routes, create_user_routes
+from config import AppConfig
+from flask import Flask
 
 def create_app() -> Flask:
     app = Flask(__name__)

@@ -1,3 +1,0 @@
-### test get users
-GET http://localhost:5000/users
-Accept: application/json

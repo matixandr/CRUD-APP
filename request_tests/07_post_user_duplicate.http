@@ -1,0 +1,9 @@
+### Test 7: POST - Duplicate user (should fail with 409)
+POST http://localhost:5000/users
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "role": "user"
+}
+

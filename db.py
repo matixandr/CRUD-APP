@@ -1,9 +1,9 @@
 from sqlalchemy.engine import Engine
 from models import Base
 import sqlalchemy
+import logging
 import dotenv
 import os
-import logging
 
 def db_init() -> Engine:
     dotenv.load_dotenv()

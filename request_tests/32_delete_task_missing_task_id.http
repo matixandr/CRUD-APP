@@ -1,0 +1,7 @@
+### Test 32: DELETE - Missing task_id (should fail with 400)
+DELETE http://localhost:5000/tasks/1
+Content-Type: application/json
+
+{
+}
+

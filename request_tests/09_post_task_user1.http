@@ -1,0 +1,12 @@
+### Test 9: POST - Create task for user_id=1
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Complete project documentation",
+  "user_id": 1,
+  "status": "pending",
+  "due_date": "2025-10-15",
+  "priority": "high"
+}
+

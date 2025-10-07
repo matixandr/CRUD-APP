@@ -1,0 +1,13 @@
+### Test 13: POST - Task with task_id in body (should fail with 400)
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_id": 999,
+  "task_name": "This should fail",
+  "user_id": 1,
+  "status": "pending",
+  "due_date": "2025-10-15",
+  "priority": "high"
+}
+

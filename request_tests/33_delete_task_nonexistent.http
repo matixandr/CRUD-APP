@@ -1,0 +1,8 @@
+### Test 33: DELETE - Non-existent task (should fail)
+DELETE http://localhost:5000/tasks/1
+Content-Type: application/json
+
+{
+  "task_id": 999
+}
+

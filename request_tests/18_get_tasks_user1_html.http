@@ -1,0 +1,4 @@
+### Test 18: GET - Fetch all tasks for user_id=1 (HTML)
+GET http://localhost:5000/tasks/1
+Accept: text/html
+

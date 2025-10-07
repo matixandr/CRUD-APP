@@ -1,0 +1,8 @@
+### Test 28: PATCH - Non-existent task (should fail)
+PATCH http://localhost:5000/tasks/1/999
+Content-Type: application/json
+
+{
+  "status": "completed"
+}
+

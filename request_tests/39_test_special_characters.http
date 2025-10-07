@@ -1,0 +1,12 @@
+### Test 39: Special Characters Test
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Task with special chars: @#$%^&*()_+-=[]{}|;':\",./<>?",
+  "user_id": 1,
+  "status": "pending",
+  "due_date": "2025-10-15",
+  "priority": "low"
+}
+

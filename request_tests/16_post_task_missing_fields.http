@@ -1,0 +1,8 @@
+### Test 16: POST - Task with missing required fields (should fail)
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "Incomplete task"
+}
+

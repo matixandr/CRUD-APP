@@ -1,8 +1,4 @@
-### create user test
+### Test 8: POST - Empty body (should fail with 400)
 POST http://localhost:5000/users
 Content-Type: application/json
 
-{
-  "username": "matt",
-  "role": "root"
-}

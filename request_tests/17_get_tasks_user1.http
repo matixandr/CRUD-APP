@@ -1,0 +1,4 @@
+### Test 17: GET - Fetch all tasks for user_id=1 (JSON)
+GET http://localhost:5000/tasks/1
+Accept: application/json
+

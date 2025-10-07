@@ -1,0 +1,4 @@
+### Test 15: POST - Task with empty body (should fail with 400)
+POST http://localhost:5000/tasks
+Content-Type: application/json
+

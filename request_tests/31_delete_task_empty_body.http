@@ -1,0 +1,4 @@
+### Test 31: DELETE - Empty body (should fail with 400)
+DELETE http://localhost:5000/tasks/1
+Content-Type: application/json
+

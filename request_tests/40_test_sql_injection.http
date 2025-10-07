@@ -1,0 +1,15 @@
+### Test 40: Security Test - SQL Injection attempt (should be safe)
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{
+  "task_name": "'; DROP TABLE tasks; --",
+  "user_id": 1,
+  "status": "pending",
+  "due_date": "2025-10-15",
+  "priority": "high"
+}
+### Test 1: GET all users (JSON format)
+GET http://localhost:5000/users
+Accept: application/json
+

@@ -1,7 +1,0 @@
-### update task test
-PATCH http://localhost:5000/tasks/1234/1
-Content-Type: application/json
-
-{
-  "task_name": "this is test for patch"
-}

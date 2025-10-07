@@ -1,0 +1,6 @@
+### Test 37: Error Handling - Invalid JSON (should fail)
+POST http://localhost:5000/tasks
+Content-Type: application/json
+
+{invalid json}
+

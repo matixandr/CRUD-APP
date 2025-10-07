@@ -1,0 +1,8 @@
+## Test 29: DELETE - Delete task (user_id=1, task_id=2)
+DELETE http://localhost:5000/tasks/1
+Content-Type: application/json
+
+{
+  "task_id": 2
+}
+

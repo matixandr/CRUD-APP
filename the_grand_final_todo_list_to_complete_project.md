@@ -67,21 +67,21 @@
 - [x] ~~Create `routes/__init__.py` - export route factories~~
 
 ## Refactor Main Application
-- [ ] Update `app.py`
-  - [ ] Import `AppConfig` from `config.py`
-  - [ ] Create `create_app()` factory function
-  - [ ] Initialize `config = AppConfig()` inside factory
-  - [ ] Register task routes blueprint with DI
-  - [ ] Register user routes blueprint with DI
-  - [ ] Update `if __name__ == "__main__"` block
-  - [ ] Remove old global `engine` variable
-  - [ ] Remove old route definitions
+- [x] ~~Update `app.py`~~
+  - [x] ~~Import `AppConfig` from `config.py`~~
+  - [x] ~~Create `create_app()` factory function~~
+  - [x] ~~Initialize `config = AppConfig()` inside factory~~
+  - [x] ~~Register task routes blueprint with DI~~
+  - [x] ~~Register user routes blueprint with DI~~
+  - [x] ~~Update `if __name__ == "__main__"` block~~
+  - [x] ~~Remove old global `engine` variable~~
+  - [x] ~~Remove old route definitions~~
 
 ## Cleanup
-- [ ] Delete old `repository.py` file (or keep as backup)
-- [ ] Update `db.py` if needed (or move to config)
-- [ ] Check all imports are correct
-- [ ] Remove unused imports
+- [x] ~~Delete old `repository.py` file (or keep as backup)~~
+- [x] ~~Update `db.py` if needed (or move to config)~~
+- [x] ~~Check all imports are correct~~
+- [x] ~~Remove unused imports~~
 
 ## Testing & Verification
 - [ ] Test `POST /tasks` endpoint

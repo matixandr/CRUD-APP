@@ -1,11 +1,13 @@
-from repository import task_post_executor, task_delete_executor, task_get_executor, task_patch_executor, \
-    users_get_executor, users_post_executor, users_delete_executor
+from repositories import UserRepository, TaskRepository
 from flask import Flask, request, jsonify, Response
 from db import db_init
 import datetime
 
 app = Flask(__name__)
 engine = db_init()
+
+ur = UserRepository(engine)
+tr = TaskRepository(engine)
 
 @app.route('/tasks/<int:user_id>/<int:task_id>', methods=['PATCH'])
 def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
@@ -31,8 +33,7 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
             }), 400
 
         try:
-            ex = task_patch_executor(
-                engine,
+            ex = tr.update(
                 update_fields,
                 task_id,
                 user_id
@@ -58,8 +59,7 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
 def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
-            result = task_get_executor(
-                engine,
+            result = tr.get_by_user(
                 user_id
             )
         except Exception as e:
@@ -145,8 +145,7 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
             }), 400
 
         try:
-            task_delete_executor(
-                engine,
+            tr.delete(
                 user_id,
                 task_id
             )
@@ -203,8 +202,7 @@ def tasks() -> tuple[Response, int]:
         }), 400
 
     try:
-        task_post_executor(
-            engine,
+        tr.create(
             task_name,
             user_id,
             created_at,
@@ -228,7 +226,7 @@ def tasks() -> tuple[Response, int]:
 def users() -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
-            usr = users_get_executor(engine)
+            usr = ur.get_all()
         except Exception as e:
             app.logger.error(f"err at users get executor:  {e}")
             return jsonify({
@@ -295,8 +293,7 @@ def users() -> None | tuple[Response, int] | str:
         create_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         try:
-            r = users_post_executor(
-                engine,
+            r = ur.create(
                 username=data.get("username"),
                 role=data.get("role"),
                 created_at=create_timestamp
@@ -327,8 +324,7 @@ def users() -> None | tuple[Response, int] | str:
             }), 400
 
         try:
-            users_delete_executor(
-                engine,
+            ur.delete(
                 username=data.get("username")
             )
         except Exception as e:

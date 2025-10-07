@@ -12,18 +12,18 @@
 - [x] ~~Update imports in other files~~
 
 ## Repository Layer
-- [ ] Create `repositories/task_repository.py`
-  - [ ] Add `TaskRepository` class with `__init__(self, engine)`
-  - [ ] Move `task_post_executor` → `create()` method
-  - [ ] Move `task_get_executor` → `get_by_user()` method
-  - [ ] Move `task_patch_executor` → `update()` method
-  - [ ] Move `task_delete_executor` → `delete()` method
-- [ ] Create `repositories/user_repository.py`
-  - [ ] Add `UserRepository` class with `__init__(self, engine)`
-  - [ ] Move `users_get_executor` → `get_all()` method
-  - [ ] Move `users_post_executor` → `create()` method
-  - [ ] Move `users_delete_executor` → `delete()` method
-- [ ] Create `repositories/__init__.py` - export both repositories
+- [x] ~~Create `repositories/task_repository.py`~~
+  - [x] ~~Add `TaskRepository` class with `__init__(self, engine)`~~
+  - [x] ~~Move `task_post_executor` → `create()` method~~
+  - [x] ~~Move `task_get_executor` → `get_by_user()` method~~
+  - [x] ~~Move `task_patch_executor` → `update()` method~~
+  - [x] ~~Move `task_delete_executor` → `delete()` method~~
+- [x] ~~Create `repositories/user_repository.py`~~
+  - [x] ~~Add `UserRepository` class with `__init__(self, engine)`~~
+  - [x] ~~Move `users_get_executor` → `get_all()` method~~
+  - [x] ~~Move `users_post_executor` → `create()` method~~
+  - [x] ~~Move `users_delete_executor` → `delete()` method~~
+- [x] ~~Create `repositories/__init__.py` - export both repositories~~
 
 ## Service Layer
 - [ ] Create `services/task_service.py`

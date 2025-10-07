@@ -49,22 +49,22 @@
   - [x] ~~Initialize `user_service` with user_repository~~
 
 ## Routes Layer
-- [ ] Create `routes/task_routes.py`
-  - [ ] Add `create_task_routes(task_service)` factory function
-  - [ ] Create Blueprint for `/tasks`
-  - [ ] Move `POST /tasks` endpoint
-  - [ ] Move `GET /tasks/<user_id>` endpoint
-  - [ ] Move `PATCH /tasks/<user_id>/<task_id>` endpoint
-  - [ ] Move `DELETE /tasks/<user_id>` endpoint
-  - [ ] Update all endpoints to use `task_service`
-- [ ] Create `routes/user_routes.py`
-  - [ ] Add `create_user_routes(user_service)` factory function
-  - [ ] Create Blueprint for `/users`
-  - [ ] Move `GET /users` endpoint
-  - [ ] Move `POST /users` endpoint
-  - [ ] Move `DELETE /users` endpoint
-  - [ ] Update all endpoints to use `user_service`
-- [ ] Create `routes/__init__.py` - export route factories
+- [x] ~~Create `routes/task_routes.py`~~
+  - [x] ~~Add `create_task_routes(task_service)` factory function~~
+  - [x] ~~Create Blueprint for `/tasks`~~
+  - [x] ~~Move `POST /tasks` endpoint~~
+  - [x] ~~Move `GET /tasks/<user_id>` endpoint~~
+  - [x] ~~Move `PATCH /tasks/<user_id>/<task_id>` endpoint~~
+  - [x] ~~Move `DELETE /tasks/<user_id>` endpoint~~
+  - [x] ~~Update all endpoints to use `task_service`~~
+- [x] ~~Create `routes/user_routes.py`~~
+  - [x] ~~Add `create_user_routes(user_service)` factory function~~
+  - [x] ~~Create Blueprint for `/users`~~
+  - [x] ~~Move `GET /users` endpoint~~
+  - [x] ~~Move `POST /users` endpoint~~
+  - [x] ~~Move `DELETE /users` endpoint~~
+  - [x] ~~Update all endpoints to use `user_service`~~
+- [x] ~~Create `routes/__init__.py` - export route factories~~
 
 ## Refactor Main Application
 - [ ] Update `app.py`

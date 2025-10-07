@@ -1,13 +1,19 @@
-from repositories import UserRepository, TaskRepository
+from repositories.task_repository import TaskRepository
+from repositories.user_repository import UserRepository
+from services.user_service import UserService
+from services.task_service import TaskService
+
 from flask import Flask, request, jsonify, Response
 from db import db_init
-import datetime
 
 app = Flask(__name__)
 engine = db_init()
 
-ur = UserRepository(engine)
 tr = TaskRepository(engine)
+ts = TaskService(tr)
+
+ur = UserRepository(engine)
+us = UserService(ur)
 
 @app.route('/tasks/<int:user_id>/<int:task_id>', methods=['PATCH'])
 def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
@@ -33,15 +39,15 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
             }), 400
 
         try:
-            ex = tr.update(
+            success, msg = ts.update_task(
                 update_fields,
                 task_id,
                 user_id
             )
-            if type(ex) == str:
+            if not success:
                 return jsonify({
                     "status": "error",
-                    "message": "There is no safe fields to update inside database"
+                    "message": msg
                 }), 400
         except Exception as e:
             app.logger.error(f"err at patch executor task: {e}")
@@ -55,15 +61,13 @@ def update_tasks(user_id: int, task_id: int) -> tuple[Response, int] | None:
             "message": "Successfully updated the task in database"
         }), 200
 
-@app.route('/tasks/<int:user_id>', methods=['GET','DELETE'])
+@app.route('/tasks/<int:user_id>', methods=['GET', 'DELETE'])
 def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
-            result = tr.get_by_user(
-                user_id
-            )
+            result = ts.get_tasks_for_user(user_id)
         except Exception as e:
-            app.logger.error(f"err at delete executor task: {e}")
+            app.logger.error(f"err at get_tasks_for_user: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error getting task data from database, please check the server console"
@@ -92,13 +96,13 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
             for record in result:
                 thing += f"""
                             <tr>
-                                <td>{record[0]}</td>
-                                <td>{record[1]}</td>
-                                <td>{record[2]}</td>
-                                <td>{record[3]}</td>
-                                <td>{record[4]}</td>
-                                <td>{record[5]}</td>
-                                <td>{record[6]}</td>
+                                <td>{record.task_id}</td>
+                                <td>{record.task_name}</td>
+                                <td>{record.user_id}</td>
+                                <td>{record.created_at}</td>
+                                <td>{record.status}</td>
+                                <td>{record.due_date}</td>
+                                <td>{record.priority}</td>
                             </tr>
                         """
 
@@ -112,13 +116,13 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
         task_list = []
         for record in result:
             task_list.append({
-                "task_id": record[0],
-                "task_name": record[1],
-                "user_id": record[2],
-                "created_at": str(record[3]),
-                "status": record[4],
-                "due_date": str(record[5]),
-                "priority": record[6]
+                "task_id": record.task_id,
+                "task_name": record.task_name,
+                "user_id": record.user_id,
+                "created_at": str(record.created_at),
+                "status": record.status,
+                "due_date": str(record.due_date),
+                "priority": record.priority
             })
 
         return jsonify({
@@ -126,7 +130,6 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
             "message": "Fetch of data successful",
             "data": task_list
         }), 200
-
 
     if request.method == "DELETE":
         data = request.get_json()
@@ -145,12 +148,14 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
             }), 400
 
         try:
-            tr.delete(
+            success, msg = ts.delete_task(
                 user_id,
                 task_id
             )
+            if not success:
+                return jsonify({"status": "error", "message": msg}), 400
         except Exception as e:
-            app.logger.error(f"err at delete executor task: {e}")
+            app.logger.error(f"err at delete_task: {e}")
             return jsonify({
                 "status": "error",
                 "message": "There was an error deleting task from database, please check the server console"
@@ -158,7 +163,7 @@ def manage_tasks(user_id: int) -> None | tuple[Response, int] | str:
 
         return jsonify({
             "status": "success",
-            "message": f"Successfully deleted an task from database"
+            "message": f"Successfully deleted a task from database"
         }), 200
 
 @app.route('/tasks', methods=['POST'])
@@ -182,34 +187,14 @@ def tasks() -> tuple[Response, int]:
             "message": "You can't pass created_at into the parameters because it's calculated automatically"
         }), 400
 
-    created_at = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    task_name = data.get('task_name')
-    due_date = data.get('due_date')
-    priority = data.get('priority')
-    user_id = data.get('user_id')
-    status = data.get('status')
-
-    if (
-            not task_name or
-            not user_id or
-            not status or
-            not due_date or
-            not priority
-    ):
-        return jsonify({
-            "status": "error",
-            "message": "One of the values for inserting into tasks is not present in the request"
-        }), 400
-
+    # Zamiast rozbijać ręcznie dane, przekaż do serwisu
     try:
-        tr.create(
-            task_name,
-            user_id,
-            created_at,
-            status,
-            due_date,
-            priority
-        )
+        success, msg = ts.create_task(data)
+        if not success:
+            return jsonify({
+                "status": "error",
+                "message": msg
+            }), 400
     except Exception as e:
         app.logger.error(f"err at post executor task: {e}")
         return jsonify({
@@ -226,7 +211,7 @@ def tasks() -> tuple[Response, int]:
 def users() -> None | tuple[Response, int] | str:
     if request.method == "GET":
         try:
-            usr = ur.get_all()
+            usr = us.get_all_users()
         except Exception as e:
             app.logger.error(f"err at users get executor:  {e}")
             return jsonify({
@@ -254,10 +239,10 @@ def users() -> None | tuple[Response, int] | str:
             for record in usr:
                 thing += f"""
                                     <tr>
-                                        <td>{record[0]}</td>
-                                        <td>{record[1]}</td>
-                                        <td>{record[2]}</td>
-                                        <td>{record[3]}</td>
+                                        <td>{record.id}</td>
+                                        <td>{record.username}</td>
+                                        <td>{record.role}</td>
+                                        <td>{record.created_at}</td>
                                     </tr>
                                 """
 
@@ -268,18 +253,19 @@ def users() -> None | tuple[Response, int] | str:
 
             return thing
 
-        task_list = []
+        user_list = []
         for record in usr:
-            task_list.append({
-                "id": record[0],
-                "username": record[1],
-                "role": record[2],
-                "created_at": str(record[3]),
+            user_list.append({
+                "id": record.id,
+                "username": record.username,
+                "role": record.role,
+                "created_at": str(record.created_at),
             })
 
         return jsonify({
             "status": "success",
-            "message": "Successfully fetched users data"
+            "message": "Successfully fetched users data",
+            "data": user_list
         }), 200
 
     if request.method == "POST":
@@ -290,18 +276,12 @@ def users() -> None | tuple[Response, int] | str:
                 "message": "Data is empty"
             }), 400
 
-        create_timestamp = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-
         try:
-            r = ur.create(
-                username=data.get("username"),
-                role=data.get("role"),
-                created_at=create_timestamp
-            )
-            if type(r) == str:
+            success, msg = us.create_user(data)
+            if not success:
                 return jsonify({
                     "status": "error",
-                    "message": "Can't create user in database: user already exists"
+                    "message": msg
                 }), 409
         except Exception as e:
             app.logger.error(f"err at users post executor: {e}")
@@ -323,10 +303,14 @@ def users() -> None | tuple[Response, int] | str:
                 "message": "Data is empty"
             }), 400
 
+        username = data.get("username")
         try:
-            ur.delete(
-                username=data.get("username")
-            )
+            success, msg = us.delete_user(username)
+            if not success:
+                return jsonify({
+                    "status": "error",
+                    "message": msg
+                }), 400
         except Exception as e:
             app.logger.error(f"err at users delete executor: {e}")
             return jsonify({

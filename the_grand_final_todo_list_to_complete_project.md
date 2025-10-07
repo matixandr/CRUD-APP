@@ -26,18 +26,18 @@
 - [x] ~~Create `repositories/__init__.py` - export both repositories~~
 
 ## Service Layer
-- [ ] Create `services/task_service.py`
-  - [ ] Add `TaskService` class with `__init__(self, task_repository)`
-  - [ ] Add `create_task(data)` method with validation
-  - [ ] Add `get_user_tasks(user_id)` method
-  - [ ] Add `update_task(update_fields, task_id, user_id)` method
-  - [ ] Add `delete_task(user_id, task_id)` method
-- [ ] Create `services/user_service.py`
-  - [ ] Add `UserService` class with `__init__(self, user_repository)`
-  - [ ] Add `get_all_users()` method
-  - [ ] Add `create_user(data)` method with validation
-  - [ ] Add `delete_user(username)` method
-- [ ] Create `services/__init__.py` - export both services
+- [x] ~~Create `services/task_service.py`~~
+  - [x] ~~Add `TaskService` class with `__init__(self, task_repository)`~~
+  - [x] ~~Add `create_task(data)` method with validation~~
+  - [x] ~~Add `get_user_tasks(user_id)` method~~
+  - [x] ~~Add `update_task(update_fields, task_id, user_id)` method~~
+  - [x] ~~Add `delete_task(user_id, task_id)` method~~
+- [x] ~~Create `services/user_service.py`~~
+  - [x] ~~Add `UserService` class with `__init__(self, user_repository)`~~
+  - [x] ~~Add `get_all_users()` method~~
+  - [x] ~~Add `create_user(data)` method with validation~~
+  - [x] ~~Add `delete_user(username)` method~~
+- [x] ~~Create `services/__init__.py` - export both services~~
 
 ## Dependency Injection Container
 - [ ] Create `config.py`
